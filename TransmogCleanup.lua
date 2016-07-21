@@ -18,6 +18,7 @@ local YES, NO, OKAY, CANCEL = YES, NO, OKAY, CANCEL
 
 local enabled = true -- changed via checkForDependencies
 local maxItemlevelToSell = 0
+local merchantButton = nil
 
 --------------------------------------------------------------------------------
 -- Debug Functions
@@ -86,7 +87,7 @@ local function confirmSellingItems()
 		end,
 	}
 
-	StaticPopup_Show("SellKnownMogItemsConfirm","Sell Transmog Items?")
+	StaticPopup_Show("SellKnownMogItemsConfirm")
 end
 
 local function wantToSellItems()
@@ -112,9 +113,19 @@ local function wantToSellItems()
 		end
 	}
 
-	StaticPopup_Show("SellKnownMogItems","Sell Transmog Items?")
+	StaticPopup_Show("SellKnownMogItems")
 end
 
+local function createMerchantButton()
+	if not merchantButton then
+		merchantButton = CreateFrame("Button", "TCMerchantButton", MerchantFrame, "UIPanelButtonTemplate")
+		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 2, -2)
+		merchantButton:SetWidth(110)
+		merchantButton:SetHeight(26)
+		merchantButton:SetText("Sell Transmog")
+		merchantButton:SetScript("OnClick", function(self) wantToSellItems() end)
+	end
+end
 
 --------------------------------------------------------------------------------
 -- Event Handler
@@ -130,6 +141,7 @@ end
 
 function events:MERCHANT_SHOW(...)
 	if enabled then
+		createMerchantButton()
 		wantToSellItems()
 	end
 end
