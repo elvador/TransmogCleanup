@@ -102,6 +102,14 @@ local function wantToSellItems()
 			end)
 		end,
 		enterClicksFirstButton = 1,
+		OnShow = function(self, ...)
+			if maxItemlevelToSell > 0 then -- last number entered
+				self.editBox:SetText(maxItemlevelToSell)
+			else -- 30 ilvl below player seems okay for now
+				local playerItemLvl = GetAverageItemLevel()
+				self.editBox:SetText(playerItemLvl > 20 and ("%.0f"):format(playerItemLvl - 30) or "")
+			end
+		end
 	}
 
 	StaticPopup_Show("SellKnownMogItems","Sell Transmog Items?")
