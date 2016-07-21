@@ -1,0 +1,13 @@
+package-as: TransmogCleanup
+
+externals:
+	libs/LibStub:
+		url: svn://svn.wowace.com/wow/libstub/mainline/trunk
+	libs/LibItemUpgradeInfo-1.0:
+		url: git://git.wowace.com/wow/libitemupgradeinfo-1-0/mainline.git
+
+enable-nolib-creation: yes
+
+ignore:
+ - README.md
+ - .gitignore
