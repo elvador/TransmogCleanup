@@ -101,6 +101,7 @@ local function wantToSellItems()
 				confirmSellingItems()
 			end)
 		end,
+		enterClicksFirstButton = 1,
 	}
 
 	StaticPopup_Show("SellKnownMogItems","Sell Transmog Items?")
