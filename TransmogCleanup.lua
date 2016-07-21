@@ -34,22 +34,22 @@ end
 local function checkForDependencies()
 	if not CanIMogIt then
 		print("Dependency missing! Download |cff93c763Can I Mog It?|r from Curse here: |cff72aacahttp://mods.curse.com/addons/wow/can-i-mog-it|r")
-    enabled = false
+		enabled = false
 	end
 end
 
 local function iterateBagItems(sellThem, maxIlvl)
 	local itemList = ""
-  local itemsSold = 0
-  local itemsSoldValue = 0
+	local itemsSold = 0
+	local itemsSoldValue = 0
 
 	for bag = 0,4 do
 		for slot = 1,GetContainerNumSlots(bag) do
 			local link = GetContainerItemLink(bag, slot)
 			if link then
 				local ilvl = ItemUpgradeInfo:GetUpgradedItemLevel(link)
-        local vendorPrice = select(11, GetItemInfo(link))
-				if ilvl <= maxIlvl and vendorPrice > 0 then -- pricecheck: can item be sold
+				local vendorPrice = select(11, GetItemInfo(link))
+				if ilvl <= maxIlvl and vendorPrice > 0 then -- pricecheck: can item be sold?
 					local mogStatus = cimi:GetTooltipText(link)
 					if mogStatus == cimi.KNOWN or
 						 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM or
@@ -57,8 +57,8 @@ local function iterateBagItems(sellThem, maxIlvl)
 						 mogStatus == cimi.KNOWN_BUT_TOO_LOW_LEVEL then
 						if sellThem then
 							UseContainerItem(bag, slot)
-              itemsSold = itemsSold + 1
-              itemsSoldValue = itemsSoldValue + vendorPrice
+							itemsSold = itemsSold + 1
+							itemsSoldValue = itemsSoldValue + vendorPrice
 						end
 
 						itemList = itemList .. link .. "(".. ilvl ..")" .. "\n"
@@ -68,42 +68,42 @@ local function iterateBagItems(sellThem, maxIlvl)
 		end
 	end
 
-  if sellThem then
-    return itemsSold, itemsSoldValue
-  else
-    return itemList
-  end
+	if sellThem then
+		return itemsSold, itemsSoldValue
+	else
+		return itemList
+	end
 end
 
 local function confirmSellingItems()
-  StaticPopupDialogs["SellKnownMogItemsConfirm"] = {
-    text = "You will sell these Items:\n"..iterateBagItems(false, maxItemlevelToSell),
-    button1 = OKAY,
-    button2 = CANCEL,
-    OnAccept = function(self)
-      local itemsSold, itemsSoldValue = iterateBagItems(true, maxItemlevelToSell)
-      print(("You earned %s by selling %d items."):format(GetCoinTextureString(itemsSoldValue), itemsSold))
-    end,
-  }
+	StaticPopupDialogs["SellKnownMogItemsConfirm"] = {
+		text = "You will sell these Items:\n"..iterateBagItems(false, maxItemlevelToSell),
+		button1 = OKAY,
+		button2 = CANCEL,
+		OnAccept = function(self)
+			local itemsSold, itemsSoldValue = iterateBagItems(true, maxItemlevelToSell)
+			print(("You earned %s by selling %d items."):format(GetCoinTextureString(itemsSoldValue), itemsSold))
+		end,
+	}
 
-  StaticPopup_Show("SellKnownMogItemsConfirm","Sell Transmog Items?")
+	StaticPopup_Show("SellKnownMogItemsConfirm","Sell Transmog Items?")
 end
 
 local function wantToSellItems()
-  StaticPopupDialogs["SellKnownMogItems"] = {
-    text = "Do you want to sell the Items which appearance you have learned?\nInput the maximum Item level you want to sell here:",
-    button1 = YES,
-    button2 = NO,
-    hasEditBox = 1,
-    OnAccept = function(self)
-      maxItemlevelToSell = tonumber(self.editBox:GetText())
-      C_Timer.After(0, function() -- hack to avoid 2 static popups
-        confirmSellingItems()
-      end)
-    end,
-    }
+	StaticPopupDialogs["SellKnownMogItems"] = {
+		text = "Do you want to sell the Items which appearance you have learned?\nInput the maximum Item level you want to sell here:",
+		button1 = YES,
+		button2 = NO,
+		hasEditBox = 1,
+		OnAccept = function(self)
+			maxItemlevelToSell = tonumber(self.editBox:GetText())
+			C_Timer.After(0, function() -- hack to avoid 2 static popups
+				confirmSellingItems()
+			end)
+		end,
+	}
 
-    StaticPopup_Show("SellKnownMogItems","Sell Transmog Items?")
+	StaticPopup_Show("SellKnownMogItems","Sell Transmog Items?")
 end
 
 
@@ -120,9 +120,9 @@ function events:PLAYER_ENTERING_WORLD(...)
 end
 
 function events:MERCHANT_SHOW(...)
-  if enabled then
-    wantToSellItems()
-  end
+	if enabled then
+		wantToSellItems()
+	end
 end
 
 addon:SetScript("OnEvent", function(self, event, ...)
