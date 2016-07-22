@@ -151,7 +151,7 @@ local function iterateBagItems()
 				local vendorPrice = select(11, GetItemInfo(link))
 
 				if status and status > 0 then -- check if Can I Mog It checks the itemList
-					if ilvl < addon.db.filters.ilvl then
+					if ilvl <= addon.db.filters.ilvl then
 						if addon.db.filters.quality[quality] then
 							if addon.db.filters.bind[bind] then
 								if addon.db.filters.learned[status] then
@@ -178,7 +178,7 @@ end
 
 local function sortItemList(itemList)
 	sort(itemList, function(a,b)
-		return a.ilvl < b.ilvl
+		return a.ilvl == b.ilvl and a.link < b.link or a.ilvl < b.ilvl -- sort by ilvl, then by itemlink (should be item id)
 	end)
 	return itemList
 end
@@ -379,7 +379,7 @@ local function createSellWindow()
 	local ilvlSlider = CreateFrame("Slider", "TCSellWindowIlvlSlider", frame, "OptionsSliderTemplate")
 	ilvlSlider:SetPoint("TOPLEFT", frame, "TOPLEFT", 125, -120)
 	ilvlSlider:SetWidth(190)
-	_G["TCSellWindowIlvlSliderText"]:SetText("Item level")
+	_G["TCSellWindowIlvlSliderText"]:SetText("Max Item level")
 	_G["TCSellWindowIlvlSliderLow"]:SetText("1")
 	_G["TCSellWindowIlvlSliderHigh"]:SetText("750")
 	ilvlSlider:SetMinMaxValues(1, 750)
