@@ -406,6 +406,7 @@ local function createSellWindow()
 
 	editbox.slider = ilvlSlider
 	ilvlSlider.editbox = editbox
+	frame.ilvlSlider = ilvlSlider
 
 	ilvlSlider:SetScript("OnValueChanged", ilvlSliderValueChanged)
 
@@ -507,6 +508,8 @@ local function updateSellSettings(sellWindow)
 	for i =1,#sellWindow.learnedCBs do
 		sellWindow.learnedCBs[i]:SetChecked(addon.db.filters.learned[i])
 	end
+
+	sellWindow.ilvlSlider:SetValue(addon.db.filters.ilvl)
 end
 
 local function displaySellWindow()
