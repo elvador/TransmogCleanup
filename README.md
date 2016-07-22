@@ -6,14 +6,11 @@
 * [Can I Mog It?](mods.curse.com/addons/wow/can-i-mog-it)
 
 # Current features:
-
-* Sell all items you've learned to transmog when opening a vendor (see screenshots above)
+* Sell all items you've learned to transmog
+* Filter the items by item level, quality, bound on equip/pickup, ...
 
 # Planned features:
-
 * Localization
-* Options
-* Remove items from "to sell" list
 * Send items to another character which can equip them
 * ... (suggestions welcome!)
 
