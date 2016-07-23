@@ -2,7 +2,7 @@
 --------------------------------------------------------------------------------
 -- TransmogCleanup by Elvador
 --
--- GLOBALS: TransmogCleanup, SLASH_TRANSMOGCLEANUP_SLASHCMD1, CanIMogIt
+-- GLOBALS: TransmogCleanup, SLASH_TRANSMOGCLEANUP_SLASHCMD1, CanIMogIt, SellJunk
 -- GLOBALS: MerchantFrame, MerchantFramePortrait, StaticPopup_Show, StaticPopupDialogs
 -- GLOBALS: TransmogCleanupDB, UIParent, ITEM_SOULBOUND, ITEM_BNETACCOUNTBOUND, ITEM_BIND_ON_EQUIP
 --
@@ -525,9 +525,14 @@ end
 local function createMerchantButton()
 	if not merchantButton then
 		merchantButton = CreateFrame("Button", "TCMerchantButton", MerchantFrame, "UIPanelButtonTemplate")
-		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 2, -2)
 		merchantButton:SetWidth(110)
-		merchantButton:SetHeight(26)
+		if SellJunk then -- dirty hack to avoid overlapping buttons
+			merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
+			merchantButton:SetHeight(16)
+		else
+			merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 2, -2)
+			merchantButton:SetHeight(26)
+		end
 		merchantButton:SetText("Sell Transmog")
 		merchantButton:SetScript("OnClick", function(self) displaySellWindow() end)
 	end
