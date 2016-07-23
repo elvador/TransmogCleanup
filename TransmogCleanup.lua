@@ -183,6 +183,14 @@ local function sortItemList(itemList)
 	return itemList
 end
 
+local function isSafeModeEnabled()
+	return addon.db.sellMode.safe
+end
+
+local function isVerboseModeEnabled()
+	return addon.db.sellMode.verbose
+end
+
 local function sellItems()
 	local itemList = sellWindow.scrollframe.content.itemList
 	local itemsSold = 0
@@ -190,10 +198,19 @@ local function sellItems()
 
 	for i = 1, #itemList do
 		local item = itemList[i]
-		if not isItemIgnored(item.link) then
+		if not isItemIgnored(item.link) and item.price > 0 then
+			if isVerboseModeEnabled() then
+				print(("Selling item %s for %s."):format(item.link, GetCoinTextureString(item.price)))
+			end
+
 			UseContainerItem(item.bag, item.slot)
 			itemsSold = itemsSold + 1
 			itemsSoldValue = itemsSoldValue + item.price
+
+			if isSafeModeEnabled() and i > 11 then
+				print(("Stopped selling items after %d items due to safe mode. Press the sell button again to continue selling %d items."):format(i, #itemList - i))
+				break
+			end
 		end
 	end
 
@@ -287,6 +304,9 @@ local function onFilterCheckedChange(self, ...)
 	updateItemList(sellWindow)
 end
 
+local function onSellModeCheckedChange(self, ...)
+	addon.db.sellMode[self.type] = self:GetChecked()
+end
 
 local function ilvlSliderValueChanged(self, value)
 	local newValue = floor(value + 0.5)
@@ -375,7 +395,31 @@ local function createSellWindow()
 	_G["TCSellWindowLearnedCB3Text"]:SetWordWrap(true)
 	_G["TCSellWindowLearnedCB3Text"]:SetJustifyV("MIDDLE")
 
+	-- Safe mode selling
+	local safeModeCB = CreateFrame("CheckButton", "TCSellWindowSafeModeCB", frame, "InterfaceOptionsCheckButtonTemplate")
+	safeModeCB:SetPoint("LEFT", frame, "BOTTOMLEFT", 120, 24)
+	safeModeCB:SetHeight(20)
+	safeModeCB:SetWidth(20)
+	_G["TCSellWindowSafeModeCBText"]:SetText("Safe Mode")
+	_G["TCSellWindowSafeModeCBText"]:SetFont("Fonts\\ARIALN.TTF", 12)
+	safeModeCB:SetHitRectInsets(0, -50, 0, 0)
+	safeModeCB.type = "safe"
+	safeModeCB:SetScript("OnClick", onSellModeCheckedChange)
+	frame.safeModeCB = safeModeCB
 
+	-- Verbose selling
+	local verboseModeCB = CreateFrame("CheckButton", "TCSellWindowVerboseModeCB", frame, "InterfaceOptionsCheckButtonTemplate")
+	verboseModeCB:SetPoint("TOPLEFT", safeModeCB, "BOTTOMLEFT", 0, 7)
+	verboseModeCB:SetHeight(20)
+	verboseModeCB:SetWidth(20)
+	_G["TCSellWindowVerboseModeCBText"]:SetText("Verbose Mode")
+	_G["TCSellWindowVerboseModeCBText"]:SetFont("Fonts\\ARIALN.TTF", 12)
+	verboseModeCB:SetHitRectInsets(0, -50, 0, 0)
+	verboseModeCB.type = "verbose"
+	verboseModeCB:SetScript("OnClick", onSellModeCheckedChange)
+	frame.verboseModeCB = verboseModeCB
+
+	-- Item level slider
 	local ilvlSlider = CreateFrame("Slider", "TCSellWindowIlvlSlider", frame, "OptionsSliderTemplate")
 	ilvlSlider:SetPoint("TOPLEFT", frame, "TOPLEFT", 125, -120)
 	ilvlSlider:SetWidth(190)
@@ -478,15 +522,14 @@ local function createSellWindow()
 
 	local sellButton = CreateFrame("Button", "TCSellWindowSellButton", frame, "UIPanelButtonTemplate")
 	sellButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
-	sellButton:SetWidth(120)
+	sellButton:SetWidth(105)
 	sellButton:SetHeight(26)
 	sellButton:SetText("Sell the items!")
 	sellButton:SetScript("OnClick", function(self) sellItems() end)
 
-
 	local hideButton = CreateFrame("Button", "TCSellWindowSellButton", frame, "UIPanelButtonTemplate")
 	hideButton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 5, 5)
-	hideButton:SetWidth(120)
+	hideButton:SetWidth(105)
 	hideButton:SetHeight(26)
 	hideButton:SetText("Hide")
 	hideButton:SetScript("OnClick", function(self) self:GetParent():Hide() end)
@@ -510,6 +553,10 @@ local function updateSellSettings(sellWindow)
 	end
 
 	sellWindow.ilvlSlider:SetValue(addon.db.filters.ilvl)
+
+	sellWindow.safeModeCB:SetChecked(addon.db.sellMode.safe)
+
+	sellWindow.verboseModeCB:SetChecked(addon.db.sellMode.verbose)
 end
 
 local function displaySellWindow()
@@ -632,6 +679,13 @@ function events:ADDON_LOADED(...)
 				[103678] = true, --Time-Lost Artifact
 
 				[52252] = true, -- Tabard of the Lightbringer
+			}
+		end
+
+		if not db.sellMode then
+			db.sellMode = {
+				["safe"] = true,
+				["verbose"] = false,
 			}
 		end
 	end
