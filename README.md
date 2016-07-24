@@ -1,5 +1,6 @@
 **Cleanup your bag from items you already learned to transmog!**
 
+
 ![TransmogCleanup Window](http://i.imgur.com/U1ug9yI.png TransmogCleanup Window)
 
 # Dependencies:
