@@ -50,6 +50,11 @@ local floor = math.floor
 local max = math.max
 local sort = table.sort
 local pairs = pairs
+local GameTooltip = GameTooltip
+local SetUpSideDressUpFrame = SetUpSideDressUpFrame
+local IsControlKeyDown = IsControlKeyDown
+local DressUpItemLink = DressUpItemLink
+local SideDressUpFrame = SideDressUpFrame
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -243,7 +248,15 @@ local function sellItems()
 end
 
 local function onIgnoredCheckedChange(self, ...)
-	addon.db.ignoredItems[self.itemId] = self:GetChecked()
+	if IsControlKeyDown() then
+		DressUpItemLink(self.item.link)
+		self:SetChecked(not self:GetChecked()) -- hack it to the limit!
+		if GameTooltip:GetOwner() == sellWindow then
+			GameTooltip:SetPoint("TOPLEFT", SideDressUpFrame, "TOPRIGHT")
+		end
+	else
+		addon.db.ignoredItems[self.itemId] = self:GetChecked()
+	end
 end
 
 local function updateItemList(frame)
@@ -262,6 +275,18 @@ local function updateItemList(frame)
 		cb:SetHeight(20)
 		cb:SetWidth(20)
 		cb:SetScript("OnClick", onIgnoredCheckedChange)
+		cb:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(frame, "ANCHOR_NONE")
+			if SideDressUpFrame:IsShown() then
+				GameTooltip:SetPoint("TOPLEFT", SideDressUpFrame, "TOPRIGHT")
+			else
+				GameTooltip:SetPoint("TOPLEFT", frame, "TOPRIGHT")
+			end
+			GameTooltip:SetBagItem(self.item.bag, self.item.slot)
+		end)
+		cb:SetScript("OnLeave", function()
+			GameTooltip:Hide()
+		end)
 
 		local itemString = content:CreateFontString("$parentItem"..i, nil, "GameFontNormal")
 		itemString:SetPoint("TOPLEFT", content, "TOPLEFT", 35, -5 - 16 * (i-1))
@@ -298,6 +323,7 @@ local function updateItemList(frame)
 		local line = content.lines[i]
 		line.cb:Hide()
 		line.cb.itemId = nil
+		line.cb.item = nil
 		line.item:Hide()
 		line.ilvl:Hide()
 		line.status:Hide()
@@ -309,6 +335,7 @@ local function updateItemList(frame)
 
 		line.cb:SetChecked(isItemIgnored(item.link))
 		line.cb.itemId = getItemIdByLink(item.link)
+		line.cb.item = item
 		line.item:SetText(item.link)
 		line.ilvl:SetText(item.ilvl)
 		line.status:SetText(learnedTypes[item.status][1])
@@ -612,6 +639,8 @@ local function displaySellWindow()
 	updateSellSettings(sellWindow)
 
 	updateItemList(sellWindow)
+
+	SetUpSideDressUpFrame(sellWindow, 400, 600, "TOPLEFT", "TOPRIGHT", -5, 0)
 
 	sellWindow:Show()
 end
