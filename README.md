@@ -3,7 +3,7 @@
 ![TransmogCleanup Window](http://i.imgur.com/U1ug9yI.png TransmogCleanup Window)
 
 # Dependencies:
-* [Can I Mog It?](mods.curse.com/addons/wow/can-i-mog-it)
+* [Can I Mog It?](http://mods.curse.com/addons/wow/can-i-mog-it)
 
 # Current features:
 * Sell all items you've learned to transmog
