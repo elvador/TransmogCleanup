@@ -16,8 +16,10 @@ TransmogCleanupDB = {}
 addon.db = TransmogCleanupDB
 
 local version = "@project-version@"
+local debug = false
 --@debug@
 version = "(git)"
+debug = true
 --@end-debug@
 
 --------------------------------------------------------------------------------
@@ -81,6 +83,12 @@ local learnedTypes = {
 
 local function print(...)
 	orgPrint("|cffec7600TransmogCleanup|r:", ...)
+end
+
+local function dbg(...)
+	if debug then
+		print(...)
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -159,16 +167,16 @@ local function iterateBagItems()
 								if addon.db.filters.learned[status] then
 									itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
 								else
-									--print(link, "learned", status)
+									--dbg(link, "learned", status)
 								end
 							else
-								--print(link, "bind", bind)
+								--dbg(link, "bind", bind)
 							end
 						else
-							--print(link, "quality", quality)
+							--dbg(link, "quality", quality)
 						end
 					else
-						--print(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
+						--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
 					end
 				end
 			end
@@ -498,6 +506,15 @@ local function createSellWindow()
 	local scrollframe = CreateFrame("ScrollFrame", nil, frame)
 	scrollframe:SetPoint("TOPLEFT", 5, -180)
 	scrollframe:SetPoint("BOTTOMRIGHT", -26, 35)
+	scrollframe:SetScript("OnMouseWheel", function(self, value)
+		local scrollbar = self:GetParent().scrollbar
+		local scrollStep = scrollbar.scrollStep or scrollbar:GetHeight() / 2
+		if ( value > 0 ) then
+			scrollbar:SetValue(scrollbar:GetValue() - scrollStep)
+		else
+			scrollbar:SetValue(scrollbar:GetValue() + scrollStep)
+		end
+	end)
 	local texture = scrollframe:CreateTexture()
 	texture:SetAllPoints()
 	texture:SetColorTexture(0, 0, 0, 0.4)
