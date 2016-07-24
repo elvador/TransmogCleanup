@@ -9,3 +9,4 @@ embeds.xml
 #@end-no-lib-strip@
 
 TransmogCleanup.lua
+ignoredItems.lua

@@ -49,6 +49,7 @@ local GameFontHighlightSmall = GameFontHighlightSmall
 local floor = math.floor
 local max = math.max
 local sort = table.sort
+local pairs = pairs
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -61,7 +62,7 @@ local sellWindow = nil
 local scanningTooltip = nil
 local updateItemListThrottle = nil
 local itemQualities = {
-	{   1,    1,   1 }, -- common
+	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
 	{   0, 0.44, 0.87}, -- rare
 	{0.64, 0.21, 0.93}, -- epic
@@ -242,7 +243,7 @@ local function sellItems()
 end
 
 local function onIgnoredCheckedChange(self, ...)
-	addon.db.ignoredItems[self.itemId] = self:GetChecked() and true or nil
+	addon.db.ignoredItems[self.itemId] = self:GetChecked()
 end
 
 local function updateItemList(frame)
@@ -670,65 +671,18 @@ function events:ADDON_LOADED(...)
 				["ilvl"] = 700,
 			}
 		end
-		if not db.filters.onuse then
+		if not db.filters.onuse and db.filters.onuse ~= false then
 			db.filters.onuse = true
 		end
 
 		if not db.ignoredItems then
-			db.ignoredItems = {
-				-- List from http://www.wowhead.com/item=65274/cloak-of-coordination#comments
-				[6948] = true, --Hearthstone
-				[17690] = true, --Frostwolf Insignia Rank 1
-				[17691] = true, --Stormpike Insignia Rank 1
-				[17900] = true, --Stormpike Insignia Rank 2
-				[17901] = true, --Stormpike Insignia Rank 3
-				[17902] = true, --Stormpike Insignia Rank 4
-				[17903] = true, --Stormpike Insignia Rank 5
-				[17904] = true, --Stormpike Insignia Rank 6
-				[17905] = true, --Frostwolf Insignia Rank 2
-				[17906] = true, --Frostwolf Insignia Rank 3
-				[17907] = true, --Frostwolf Insignia Rank 4
-				[17908] = true, --Frostwolf Insignia Rank 5
-				[17909] = true, --Frostwolf Insignia Rank 6
-				[18984] = true, --Dimensional Ripper - Everlook
-				[18986] = true, --Ultrasafe Transporter: Gadgetzan
-				[22631] = true, --Atiesh, Greatstaff of the Guardian
-				[28585] = true, --Ruby Slippers
-				[30542] = true, --Dimensional Ripper - Area 52
-				[30544] = true, --Ultrasafe Transporter: Toshley's Station
-				[32757] = true, --Blessed Medallion of Karabor
-				[37118] = true, --Scroll of Recall
-				[37863] = true, --Direbrew's Remote
-				[40585] = true, --Signet of the Kirin Tor
-				[44314] = true, --Scroll of Recall II
-				[44315] = true, --Scroll of Recall III
-				[45691] = true, --Inscribed Signet of the Kirin Tor
-				[46874] = true, --Argent Crusader's Tabard
-				[48933] = true, --Wormhole Generator: Northrend
-				[48957] = true, --Etched Signet of the Kirin Tor
-				[50287] = true, --Boots of the Bay
-				[51557] = true, --Runed Signet of the Kirin Tor
-				[52251] = true, --Jaina's Locket
-				[54452] = true, --Ethereal Portal
-				[58487] = true, --Potion of Deepholm
-				[63206] = true, --Wrap of Unity
-				[63207] = true, --Wrap of Unity
-				[63352] = true, --Shroud of Cooperation
-				[63353] = true, --Shroud of Cooperation
-				[63378] = true, --Hellscream's Reach Tabard
-				[63379] = true, --Baradin's Wardens Tabard
-				[64457] = true, --The Last Relic of Argus
-				[64488] = true, --The Innkeeper's Daughter
-				[65274] = true, --Cloak of Coordination
-				[65360] = true, --Cloak of Coordination
-				[87215] = true, --Wormhole Generator: Pandaria
-				[93672] = true, --Dark Portal
-				[95050] = true, --The Brassiest Knuckle
-				[95051] = true, --The Brassiest Knuckle
-				[103678] = true, --Time-Lost Artifact
+			db.ignoredItems = {}
+		end
 
-				[52252] = true, -- Tabard of the Lightbringer
-			}
+		for k,v in pairs(addon:getDefaultIgnoredItems()) do
+			if not db.ignoredItems[k] and db.ignoredItems[k] ~= false then
+				db.ignoredItems[k] = v
+			end
 		end
 
 		if not db.sellMode then
