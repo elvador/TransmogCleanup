@@ -12,7 +12,7 @@
 # Planned features:
 * Localization
 * Send items to another character which can equip them
-* ... (suggestions welcome!)
+* [... (suggestions welcome!)](https://github.com/elvador/TransmogCleanup/issues)
 
 # Support the project:
 [![View Project on GitHub](http://i.imgur.com/e4AQubz.png View Project on GitHub)](https://github.com/elvador/TransmogCleanup)
