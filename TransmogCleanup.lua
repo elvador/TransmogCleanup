@@ -35,7 +35,9 @@ local GetAverageItemLevel = GetAverageItemLevel
 local GetCoinTextureString = GetCoinTextureString
 local GetContainerItemLink = GetContainerItemLink
 local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemPurchaseInfo = GetContainerItemPurchaseInfo
 local GetItemInfo = GetItemInfo
+local SecondsToTime = SecondsToTime
 local select = select
 local tonumber = tonumber
 local UseContainerItem = UseContainerItem
@@ -199,17 +201,23 @@ local function sellItems()
 	for i = 1, #itemList do
 		local item = itemList[i]
 		if not isItemIgnored(item.link) and item.price > 0 then
-			if isVerboseModeEnabled() then
-				print(("Selling item %s for %s."):format(item.link, GetCoinTextureString(item.price)))
-			end
 
-			UseContainerItem(item.bag, item.slot)
-			itemsSold = itemsSold + 1
-			itemsSoldValue = itemsSoldValue + item.price
+			local _, _, refundSec = GetContainerItemPurchaseInfo(item.bag, item.slot)
+			if refundSec then
+				print(("Not selling %s because it is still refundable. Please wait %s before selling it."):format(item.link, SecondsToTime(refundSec, true, true)))
+			else
+				if isVerboseModeEnabled() then
+					print(("Selling item %s for %s."):format(item.link, GetCoinTextureString(item.price)))
+				end
 
-			if isSafeModeEnabled() and i > 11 then
-				print(("Stopped selling items after %d items due to safe mode. Press the sell button again to continue selling %d items."):format(i, #itemList - i))
-				break
+				UseContainerItem(item.bag, item.slot)
+				itemsSold = itemsSold + 1
+				itemsSoldValue = itemsSoldValue + item.price
+
+				if isSafeModeEnabled() and i > 11 then
+					print(("Stopped selling items after %d items due to safe mode. Press the sell button again to continue selling %d items."):format(i, #itemList - i))
+					break
+				end
 			end
 		end
 	end
