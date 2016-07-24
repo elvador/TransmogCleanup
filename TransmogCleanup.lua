@@ -30,10 +30,8 @@ local _G = _G
 local orgPrint = print
 local cimi = CanIMogIt
 local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
-local YES, NO, OKAY, CANCEL = YES, NO, OKAY, CANCEL
 local C_Timer = C_Timer
 local CreateFrame = CreateFrame
-local GetAverageItemLevel = GetAverageItemLevel
 local GetCoinTextureString = GetCoinTextureString
 local GetContainerItemLink = GetContainerItemLink
 local GetContainerNumSlots = GetContainerNumSlots
@@ -61,7 +59,6 @@ local SideDressUpFrame = SideDressUpFrame
 --
 
 local enabled = true -- changed via checkForDependencies
-local maxItemlevelToSell = 0
 local merchantButton = nil
 local sellWindow = nil
 local scanningTooltip = nil
