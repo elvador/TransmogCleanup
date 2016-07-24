@@ -39,6 +39,7 @@ local GetContainerItemLink = GetContainerItemLink
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerItemPurchaseInfo = GetContainerItemPurchaseInfo
 local GetItemInfo = GetItemInfo
+local GetItemSpell = GetItemSpell
 local SecondsToTime = SecondsToTime
 local select = select
 local tonumber = tonumber
@@ -159,24 +160,29 @@ local function iterateBagItems()
 				local bind = getItemBind(bag, slot)
 				local _, _, quality = GetItemInfo(link)
 				local vendorPrice = select(11, GetItemInfo(link))
+				local hasOnUseEffect = GetItemSpell(link)
 
 				if status and status > 0 then -- check if Can I Mog It checks the itemList
-					if ilvl <= addon.db.filters.ilvl then
-						if addon.db.filters.quality[quality] then
-							if addon.db.filters.bind[bind] then
-								if addon.db.filters.learned[status] then
-									itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
+					if not (addon.db.filters.onuse and hasOnUseEffect) then
+						if ilvl <= addon.db.filters.ilvl then
+							if addon.db.filters.quality[quality] then
+								if addon.db.filters.bind[bind] then
+									if addon.db.filters.learned[status] then
+										itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
+									else
+										--dbg(link, "learned", status)
+									end
 								else
-									--dbg(link, "learned", status)
+									--dbg(link, "bind", bind)
 								end
 							else
-								--dbg(link, "bind", bind)
+								--dbg(link, "quality", quality)
 							end
 						else
-							--dbg(link, "quality", quality)
+							--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
 						end
 					else
-						--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
+						--dbg(link, "hasOnUseEffect", hasOnUseEffect)
 					end
 				end
 			end
@@ -316,7 +322,11 @@ local function updateItemList(frame)
 end
 
 local function onFilterCheckedChange(self, ...)
-	addon.db.filters[self.type][self.id] = self:GetChecked()
+	if self.type=="onuse" then
+		addon.db.filters[self.type] = self:GetChecked()
+	else
+		addon.db.filters[self.type][self.id] = self:GetChecked()
+	end
 	updateItemList(sellWindow)
 end
 
@@ -410,6 +420,15 @@ local function createSellWindow()
 	_G["TCSellWindowLearnedCB3Text"]:SetHeight(37)
 	_G["TCSellWindowLearnedCB3Text"]:SetWordWrap(true)
 	_G["TCSellWindowLearnedCB3Text"]:SetJustifyV("MIDDLE")
+
+	-- On Use Filter
+	local cb = CreateFrame("CheckButton", "TCSellWindowOnUseCB", frame, "InterfaceOptionsCheckButtonTemplate")
+	cb:SetPoint("LEFT", frame, "TOPLEFT", 120, -102)
+	_G["TCSellWindowOnUseCBText"]:SetText("On Use")
+	cb:SetHitRectInsets(0, -35, 0, 0)
+	cb.type = "onuse"
+	cb:SetScript("OnClick", onFilterCheckedChange)
+	frame.onUseCB = cb
 
 	-- Safe mode selling
 	local safeModeCB = CreateFrame("CheckButton", "TCSellWindowSafeModeCB", frame, "InterfaceOptionsCheckButtonTemplate")
@@ -577,6 +596,8 @@ local function updateSellSettings(sellWindow)
 		sellWindow.learnedCBs[i]:SetChecked(addon.db.filters.learned[i])
 	end
 
+	sellWindow.onUseCB:SetChecked(addon.db.filters.onuse)
+
 	sellWindow.ilvlSlider:SetValue(addon.db.filters.ilvl)
 
 	sellWindow.safeModeCB:SetChecked(addon.db.sellMode.safe)
@@ -648,6 +669,9 @@ function events:ADDON_LOADED(...)
 				},
 				["ilvl"] = 700,
 			}
+		end
+		if not db.filters.onuse then
+			db.filters.onuse = true
 		end
 
 		if not db.ignoredItems then
