@@ -432,6 +432,7 @@ local function createSellWindow()
 		cb:SetPoint("LEFT", frame, "TOPLEFT", 180, -34 - 17 * i)
 		_G["TCSellWindowLearnedCB"..i.."Text"]:SetText(learnedTypes[i][1])
 		_G["TCSellWindowLearnedCB"..i.."Text"]:SetWidth(120)
+		cb:SetHitRectInsets(0, -110, 0, 0)
 		cb.type = "learned"
 		cb.id = i
 		cb:SetScript("OnClick", onFilterCheckedChange)
