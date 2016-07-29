@@ -244,6 +244,8 @@ local function sellItems()
 
 	if itemsSold > 0 then
 		print(("You earned %s by selling %d items."):format(GetCoinTextureString(itemsSoldValue), itemsSold))
+	else
+		print("No items to sell.")
 	end
 end
 
