@@ -108,10 +108,13 @@ end
 
 local function getTransmogStatus(link)
 	local mogStatus = cimi:GetTooltipText(link)
+	-- if cimi:TextIsKnown(mogStatus) then -- < Could just use this, but let's be independent
 	if mogStatus == cimi.KNOWN or
 		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM or
 		 mogStatus == cimi.KNOWN_BY_ANOTHER_CHARACTER or
-		 mogStatus == cimi.KNOWN_BUT_TOO_LOW_LEVEL then
+		 mogStatus == cimi.KNOWN_BUT_TOO_LOW_LEVEL or
+		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM_BUT_TOO_LOW_LEVEL or
+		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM_AND_CHARACTER then
 		return 1
 	elseif mogStatus == cimi.NOT_TRANSMOGABLE then
 		return 2
