@@ -3,8 +3,8 @@
 -- TransmogCleanup by Elvador
 --
 -- GLOBALS: TransmogCleanup, SLASH_TRANSMOGCLEANUP_SLASHCMD1, CanIMogIt, SellJunk
--- GLOBALS: MerchantFrame, MerchantFramePortrait, StaticPopup_Show, StaticPopupDialogs
--- GLOBALS: TransmogCleanupDB, UIParent, ITEM_SOULBOUND, ITEM_BNETACCOUNTBOUND, ITEM_BIND_ON_EQUIP
+-- GLOBALS: MerchantFrame, MerchantFramePortrait
+-- GLOBALS: TransmogCleanupDB, UIParent
 --
 
 local folder, ns = ...
@@ -53,6 +53,10 @@ local SetUpSideDressUpFrame = SetUpSideDressUpFrame
 local IsControlKeyDown = IsControlKeyDown
 local DressUpItemLink = DressUpItemLink
 local SideDressUpFrame = SideDressUpFrame
+local CloseSideDressUpFrame = CloseSideDressUpFrame
+local ITEM_SOULBOUND = ITEM_SOULBOUND
+local ITEM_BNETACCOUNTBOUND = ITEM_BNETACCOUNTBOUND
+local ITEM_BIND_ON_EQUIP = ITEM_BIND_ON_EQUIP
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -63,6 +67,7 @@ local merchantButton = nil
 local sellWindow = nil
 local scanningTooltip = nil
 local updateItemListThrottle = nil
+local lastWindowState = nil
 local itemQualities = {
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
@@ -647,6 +652,8 @@ local function updateSellSettings(sellWindow)
 end
 
 local function displaySellWindow()
+	dbg("displaySellWindow:", sellWindow and "creating window" or "window already created")
+
 	if not sellWindow then createSellWindow() end
 
 	updateSellSettings(sellWindow)
@@ -739,6 +746,18 @@ end
 function events:MERCHANT_SHOW(...)
 	if enabled then
 		createMerchantButton()
+	end
+
+	if sellWindow and lastWindowState then
+		displaySellWindow()
+	end
+end
+
+function events:MERCHANT_CLOSED(...)
+	if sellWindow then
+		lastWindowState = sellWindow:IsShown()
+		sellWindow:Hide()
+		CloseSideDressUpFrame(sellWindow)
 	end
 end
 
