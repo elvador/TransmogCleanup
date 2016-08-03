@@ -652,7 +652,7 @@ local function updateSellSettings(sellWindow)
 end
 
 local function displaySellWindow()
-	dbg("displaySellWindow:", sellWindow and "creating window" or "window already created")
+	dbg("displaySellWindow:", sellWindow and "window already created" or "creating window")
 
 	if not sellWindow then createSellWindow() end
 
@@ -663,6 +663,22 @@ local function displaySellWindow()
 	SetUpSideDressUpFrame(sellWindow, 400, 600, "TOPLEFT", "TOPRIGHT", -5, 0)
 
 	sellWindow:Show()
+end
+
+local function hideSellWindow()
+	if sellWindow then
+		lastWindowState = sellWindow:IsShown()
+		sellWindow:Hide()
+		CloseSideDressUpFrame(sellWindow)
+	end
+end
+
+local function toggleSellWindows()
+	if sellWindow and sellWindow:IsShown() then
+		hideSellWindow()
+	else
+		displaySellWindow()
+	end
 end
 
 local function createMerchantButton()
@@ -677,7 +693,7 @@ local function createMerchantButton()
 			merchantButton:SetHeight(26)
 		end
 		merchantButton:SetText("Sell Transmog")
-		merchantButton:SetScript("OnClick", function(self) displaySellWindow() end)
+		merchantButton:SetScript("OnClick", function(self) toggleSellWindows() end)
 	end
 end
 
@@ -754,11 +770,7 @@ function events:MERCHANT_SHOW(...)
 end
 
 function events:MERCHANT_CLOSED(...)
-	if sellWindow then
-		lastWindowState = sellWindow:IsShown()
-		sellWindow:Hide()
-		CloseSideDressUpFrame(sellWindow)
-	end
+	hideSellWindow()
 end
 
 function events:BAG_UPDATE(...)
