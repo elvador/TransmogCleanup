@@ -58,6 +58,7 @@ local ITEM_SOULBOUND = ITEM_SOULBOUND
 local ITEM_BNETACCOUNTBOUND = ITEM_BNETACCOUNTBOUND
 local ITEM_BIND_ON_EQUIP = ITEM_BIND_ON_EQUIP
 local IsAddOnLoaded = IsAddOnLoaded
+local GetTime = GetTime
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -667,6 +668,7 @@ local function displaySellWindow()
 end
 
 local function hideSellWindow()
+	dbg("sellWindow()", sellWindow, lastWindowState)
 	if sellWindow then
 		lastWindowState = sellWindow:IsShown()
 		sellWindow:Hide()
@@ -791,8 +793,14 @@ function events:MERCHANT_SHOW(...)
 	end
 end
 
+local prev = 0 -- Throttle because MERCHANT_CLOSED fires twice
 function events:MERCHANT_CLOSED(...)
-	hideSellWindow()
+	local t = GetTime()
+
+	if t - prev > 1 then
+		prev = t
+		hideSellWindow()
+	end
 end
 
 function events:BAG_UPDATE(...)
