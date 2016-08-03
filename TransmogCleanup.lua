@@ -125,7 +125,8 @@ local function getTransmogStatus(link)
 		return 1
 	elseif mogStatus == cimi.NOT_TRANSMOGABLE then
 		return 2
-	elseif mogStatus == cimi.UNKNOWABLE_BY_CHARACTER then
+	elseif mogStatus == cimi.UNKNOWABLE_BY_CHARACTER or
+				 mogStatus == cimi.UNKNOWABLE_BY_CHARACTER_SOULBOUND then
 		return 3
 	end
 	return nil
