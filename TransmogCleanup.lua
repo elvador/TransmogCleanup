@@ -669,6 +669,10 @@ local function createMerchantButton()
 	if not merchantButton then
 		merchantButton = CreateFrame("Button", "TCMerchantButton", MerchantFrame, "UIPanelButtonTemplate")
 		merchantButton:SetWidth(110)
+		if LoadAddOn("GnomishVendorShrinker") then -- even dirtier hack for dirty gnomes
+			TCMerchantButton:SetFrameLevel(TCMerchantButton:GetFrameLevel()+2)
+			SellJunk = true
+		end
 		if SellJunk then -- dirty hack to avoid overlapping buttons
 			merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
 			merchantButton:SetHeight(16)
