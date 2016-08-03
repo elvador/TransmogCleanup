@@ -57,6 +57,7 @@ local CloseSideDressUpFrame = CloseSideDressUpFrame
 local ITEM_SOULBOUND = ITEM_SOULBOUND
 local ITEM_BNETACCOUNTBOUND = ITEM_BNETACCOUNTBOUND
 local ITEM_BIND_ON_EQUIP = ITEM_BIND_ON_EQUIP
+local IsAddOnLoaded = IsAddOnLoaded
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -681,19 +682,40 @@ local function toggleSellWindows()
 	end
 end
 
+local function fixButtonPosition()
+	local fixPosition, fixFramelevel = nil, nil
+
+	-- Addons which use the space our button should be
+	if SellJunk then
+		fixPosition = true
+	end
+
+	if IsAddOnLoaded("GnomishVendorShrinker") then
+		fixPosition = true
+		fixFramelevel = true
+	end
+
+	-- different solutions for whatever is needed
+	if fixPosition then
+		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
+		merchantButton:SetHeight(16)
+	end
+
+	if fixFramelevel then
+		merchantButton:SetFrameLevel(merchantButton:GetFrameLevel()+2)
+	end
+end
+
 local function createMerchantButton()
 	if not merchantButton then
 		merchantButton = CreateFrame("Button", "TCMerchantButton", MerchantFrame, "UIPanelButtonTemplate")
 		merchantButton:SetWidth(110)
-		if SellJunk then -- dirty hack to avoid overlapping buttons
-			merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
-			merchantButton:SetHeight(16)
-		else
-			merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 2, -2)
-			merchantButton:SetHeight(26)
-		end
+		merchantButton:SetHeight(26)
+		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 2, -2)
 		merchantButton:SetText("Sell Transmog")
 		merchantButton:SetScript("OnClick", function(self) toggleSellWindows() end)
+
+		fixButtonPosition() -- dirty hack to avoid overlapping buttons with other addons
 	end
 end
 
