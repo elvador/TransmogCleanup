@@ -735,9 +735,8 @@ local function createMerchantButton()
 		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 2, -2)
 		merchantButton:SetText("Sell Transmog")
 		merchantButton:SetScript("OnClick", function(self) toggleSellWindows() end)
-
-		fixButtonPosition() -- dirty hack to avoid overlapping buttons with other addons
 	end
+	fixButtonPosition() -- dirty hack to avoid overlapping buttons with other addons
 end
 
 
