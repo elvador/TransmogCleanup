@@ -59,6 +59,7 @@ local ITEM_BNETACCOUNTBOUND = ITEM_BNETACCOUNTBOUND
 local ITEM_BIND_ON_EQUIP = ITEM_BIND_ON_EQUIP
 local IsAddOnLoaded = IsAddOnLoaded
 local GetTime = GetTime
+local type = type
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -113,8 +114,18 @@ local function checkForDependencies()
 	end
 end
 
+local function isTransmogable(link)
+	return link and cimi:IsTransmogable(link)
+end
+
 local function getTransmogStatus(link)
 	local mogStatus = cimi:GetTooltipText(link)
+
+	if not mogStatus or type(mogStatus) ~= "string" then
+		print(("Couldn't determine status of item %s."):format(link))
+		return
+	end
+
 	-- if cimi:TextIsKnown(mogStatus) then -- < Could just use this, but let's be independent
 	if mogStatus == cimi.KNOWN or
 		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM or
@@ -123,10 +134,10 @@ local function getTransmogStatus(link)
 		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM_BUT_TOO_LOW_LEVEL or
 		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM_AND_CHARACTER then
 		return 1
-	elseif mogStatus == cimi.NOT_TRANSMOGABLE then
+	elseif mogStatus == cimi.NOT_TRANSMOGABLE or
+				 mogStatus == cimi.UNKNOWABLE_SOULBOUND then
 		return 2
-	elseif mogStatus == cimi.UNKNOWABLE_BY_CHARACTER or
-				 mogStatus == cimi.UNKNOWABLE_BY_CHARACTER_SOULBOUND then
+	elseif mogStatus:find(cimi.UNKNOWABLE_BY_CHARACTER) then
 		return 3
 	end
 	return nil
@@ -170,34 +181,41 @@ local function iterateBagItems()
 			local link = GetContainerItemLink(bag, slot)
 			if link then
 				local ilvl = ItemUpgradeInfo:GetUpgradedItemLevel(link)
-				local status = getTransmogStatus(link)
+				local transmoggable = isTransmogable(link)
 				local bind = getItemBind(bag, slot)
 				local _, _, quality = GetItemInfo(link)
 				local vendorPrice = select(11, GetItemInfo(link))
 				local hasOnUseEffect = GetItemSpell(link)
 
-				if status and status > 0 then -- check if Can I Mog It checks the itemList
-					if not (addon.db.filters.onuse and hasOnUseEffect) then
-						if ilvl <= addon.db.filters.ilvl then
-							if addon.db.filters.quality[quality] then
-								if addon.db.filters.bind[bind] then
-									if addon.db.filters.learned[status] then
-										itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
+				if transmoggable then
+					local status = getTransmogStatus(link)
+					if status and status > 0 then -- check if Can I Mog It checks the itemList
+						if addon.db.filters.onuse or not hasOnUseEffect then -- not (not addon.db.filters.onuse and hasOnUseEffect)
+							if ilvl <= addon.db.filters.ilvl then
+								if addon.db.filters.quality[quality] then
+									if addon.db.filters.bind[bind] then
+										if addon.db.filters.learned[status] then
+											itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
+										else
+											--dbg(link, "learned", status)
+										end
 									else
-										--dbg(link, "learned", status)
+										--dbg(link, "bind", bind)
 									end
 								else
-									--dbg(link, "bind", bind)
+									--dbg(link, "quality", quality)
 								end
 							else
-								--dbg(link, "quality", quality)
+								--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
 							end
 						else
-							--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
+							--dbg(link, "hasOnUseEffect", hasOnUseEffect)
 						end
 					else
-						--dbg(link, "hasOnUseEffect", hasOnUseEffect)
+						--dbg(link, "status", status)
 					end
+				else
+					--dbg(link, "transmoggable", transmoggable)
 				end
 			end
 		end
