@@ -737,6 +737,9 @@ local function createMerchantButton()
 		merchantButton:SetScript("OnClick", function(self) toggleSellWindows() end)
 	end
 	fixButtonPosition() -- dirty hack to avoid overlapping buttons with other addons
+	C_Timer.NewTicker(0.2, function() -- give lod addons some time to load
+		fixButtonPosition()
+	end, 5)
 end
 
 
