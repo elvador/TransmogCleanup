@@ -527,9 +527,9 @@ local function createSellWindow()
 	ilvlSlider:SetWidth(190)
 	_G["TCSellWindowIlvlSliderText"]:SetText("Max Item level")
 	_G["TCSellWindowIlvlSliderLow"]:SetText("1")
-	_G["TCSellWindowIlvlSliderHigh"]:SetText("900")
-	ilvlSlider:SetMinMaxValues(1, 900)
- 	ilvlSlider:SetValue(720)
+	_G["TCSellWindowIlvlSliderHigh"]:SetText("1000")
+	ilvlSlider:SetMinMaxValues(1, 1000)
+ 	ilvlSlider:SetValue(800)
 	ilvlSlider:SetValueStep(1)
 	ilvlSlider:SetHitRectInsets(0, 0, 0, 0) -- default from OptionsSliderTemplate: 0,0,-10,-10
 
