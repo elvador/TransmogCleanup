@@ -99,7 +99,7 @@ end
 
 local function dbg(...)
 	if debug then
-		print(...)
+		orgPrint("|cffec7600TC|cff00ffff(debug)|r:", ...)
 	end
 end
 
@@ -122,7 +122,7 @@ local function getTransmogStatus(link)
 	local mogStatus = cimi:GetTooltipText(link)
 
 	if not mogStatus or type(mogStatus) ~= "string" then
-		print(("Couldn't determine status of item %s."):format(link))
+		dbg(("Couldn't determine status of item %s."):format(link))
 		return
 	end
 
@@ -135,7 +135,7 @@ local function getTransmogStatus(link)
 		 mogStatus == cimi.KNOWN_FROM_ANOTHER_ITEM_AND_CHARACTER then
 		return 1
 	elseif mogStatus == cimi.NOT_TRANSMOGABLE or
-				 mogStatus == cimi.UNKNOWABLE_SOULBOUND then
+		   mogStatus:find(cimi.UNKNOWABLE_SOULBOUND) then
 		return 2
 	elseif mogStatus:find(cimi.UNKNOWABLE_BY_CHARACTER) then
 		return 3
@@ -181,14 +181,14 @@ local function iterateBagItems()
 			local link = GetContainerItemLink(bag, slot)
 			if link then
 				local ilvl = ItemUpgradeInfo:GetUpgradedItemLevel(link)
-				local transmoggable = isTransmogable(link)
+				--local transmoggable = isTransmogable(link)
 				local bind = getItemBind(bag, slot)
 				local _, _, quality = GetItemInfo(link)
 				local vendorPrice = select(11, GetItemInfo(link))
 				local hasOnUseEffect = GetItemSpell(link)
+				local status = getTransmogStatus(link)
 
-				if transmoggable then
-					local status = getTransmogStatus(link)
+				if status ~= nil then
 					if status and status > 0 then -- check if Can I Mog It checks the itemList
 						if addon.db.filters.onuse or not hasOnUseEffect then -- not (not addon.db.filters.onuse and hasOnUseEffect)
 							if ilvl <= addon.db.filters.ilvl then
@@ -215,7 +215,7 @@ local function iterateBagItems()
 						--dbg(link, "status", status)
 					end
 				else
-					--dbg(link, "transmoggable", transmoggable)
+					--dbg(link, "status ~= nil", status)
 				end
 			end
 		end
