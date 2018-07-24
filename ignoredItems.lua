@@ -83,5 +83,23 @@ function TransmogCleanup:getDefaultIgnoredItems()
 		[127842] = true, -- Infernal Alchemist Stone
 		[128023] = true, -- Stone of the Wilds
 		[128024] = true, -- Stone of the Elements
+		
+		[44050] = true, --Mastercraft Kalu'ak Fishing Pole
+		[84661] = true, --dragon-fishing-pole
+		[45858] = true, --nats-lucky-fishing-pole
+		[19970] = true, --arcanite-fishing-pole
+		
+		[44935] = true, --Ring of the Kirin Tor
+		[40586] = true, --Band of the Kirin Tor
+		[44934] = true, --Loop of the Kirin Tor
+		[45688] = true, --Inscribed Band of the Kirin Tor
+		[45689] = true, --Inscribed Loop of the Kirin Tor
+		[45690] = true, --Inscribed Ring of the Kirin Tor
+		[48954] = true, --Etched Band of the Kirin Tor
+		[48955] = true, --Etched Loop of the Kirin Tor
+		[48956] = true, --Etched Ring of the Kirin Tor
+		[51558] = true, --Runed Loop of the Kirin Tor
+		[51559] = true, --Runed Ring of the Kirin Tor
+		[51560] = true, --Runed Band of the Kirin Tor
 	}
 end
