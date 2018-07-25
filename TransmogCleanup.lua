@@ -716,6 +716,11 @@ local function fixButtonPosition()
 		fixFramelevel = true
 	end
 
+	if IsAddOnLoaded("ElvUI_SLE") then
+		fixPosition = true
+		fixFramelevel = true
+	end
+	
 	-- different solutions for whatever is needed
 	if fixPosition then
 		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
