@@ -716,7 +716,7 @@ local function fixButtonPosition()
 		fixFramelevel = true
 	end
 
-	if IsAddOnLoaded("ElvUI_SLE") then
+	if IsAddOnLoaded("ElvUI_SLE") then --ElvUI plugin Shadow and Light
 		fixPosition = true
 		fixFramelevel = true
 	end
