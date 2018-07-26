@@ -527,9 +527,9 @@ local function createSellWindow()
 	ilvlSlider:SetWidth(190)
 	_G["TCSellWindowIlvlSliderText"]:SetText("Max Item level")
 	_G["TCSellWindowIlvlSliderLow"]:SetText("1")
-	_G["TCSellWindowIlvlSliderHigh"]:SetText("1000")
-	ilvlSlider:SetMinMaxValues(1, 1000)
- 	ilvlSlider:SetValue(800)
+	_G["TCSellWindowIlvlSliderHigh"]:SetText("600")
+	ilvlSlider:SetMinMaxValues(1, 600)
+ 	ilvlSlider:SetValue(175)
 	ilvlSlider:SetValueStep(1)
 	ilvlSlider:SetHitRectInsets(0, 0, 0, 0) -- default from OptionsSliderTemplate: 0,0,-10,-10
 
@@ -716,6 +716,11 @@ local function fixButtonPosition()
 		fixFramelevel = true
 	end
 
+	if IsAddOnLoaded("ElvUI_SLE") then --ElvUI plugin Shadow and Light
+		fixPosition = true
+		fixFramelevel = true
+	end
+	
 	-- different solutions for whatever is needed
 	if fixPosition then
 		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
