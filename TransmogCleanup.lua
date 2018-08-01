@@ -188,34 +188,38 @@ local function iterateBagItems()
 				local hasOnUseEffect = GetItemSpell(link)
 				local status = getTransmogStatus(link)
 
-				if status ~= nil then
-					if status and status > 0 then -- check if Can I Mog It checks the itemList
-						if addon.db.filters.onuse or not hasOnUseEffect then -- not (not addon.db.filters.onuse and hasOnUseEffect)
-							if ilvl <= addon.db.filters.ilvl then
-								if addon.db.filters.quality[quality] then
-									if addon.db.filters.bind[bind] then
-										if addon.db.filters.learned[status] then
-											itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
+				if vendorPrice ~= 0 then -- check for No sell price
+					if status ~= nil then
+						if status and status > 0 then -- check if Can I Mog It checks the itemList
+							if addon.db.filters.onuse or not hasOnUseEffect then -- not (not addon.db.filters.onuse and hasOnUseEffect)
+								if ilvl <= addon.db.filters.ilvl then
+									if addon.db.filters.quality[quality] then
+										if addon.db.filters.bind[bind] then
+											if addon.db.filters.learned[status] then
+												itemList[#itemList+1] = {link = link, ilvl = ilvl, bag = bag, slot = slot, status = status, price = vendorPrice}
+											else
+												--dbg(link, "learned", status)
+											end
 										else
-											--dbg(link, "learned", status)
+											--dbg(link, "bind", bind)
 										end
 									else
-										--dbg(link, "bind", bind)
+										--dbg(link, "quality", quality)
 									end
 								else
-									--dbg(link, "quality", quality)
+									--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
 								end
 							else
-								--dbg(link, "ilvl", ilvl, addon.db.filters.ilvl, ilvl < addon.db.filters.ilvl)
+								--dbg(link, "hasOnUseEffect", hasOnUseEffect)
 							end
 						else
-							--dbg(link, "hasOnUseEffect", hasOnUseEffect)
+							--dbg(link, "status", status)
 						end
 					else
-						--dbg(link, "status", status)
+						--dbg(link, "status ~= nil", status)
 					end
 				else
-					--dbg(link, "status ~= nil", status)
+					--dbg(link, "vendorPrice", vendorPrice)
 				end
 			end
 		end
