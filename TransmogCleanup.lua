@@ -71,6 +71,7 @@ local sellWindow = nil
 local scanningTooltip = nil
 local updateItemListThrottle = nil
 local lastWindowState = nil
+local maxIlvl = 155
 local itemQualities = {
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
@@ -527,13 +528,13 @@ local function createSellWindow()
 	ilvlSlider:SetWidth(190)
 	_G["TCSellWindowIlvlSliderText"]:SetText("Max Item level")
 	_G["TCSellWindowIlvlSliderLow"]:SetText("1")
-	_G["TCSellWindowIlvlSliderHigh"]:SetText("600")
-	ilvlSlider:SetMinMaxValues(1, 600)
- 	ilvlSlider:SetValue(175)
+	_G["TCSellWindowIlvlSliderHigh"]:SetText(maxIlvl)
+	ilvlSlider:SetMinMaxValues(1, maxIlvl)
+ 	ilvlSlider:SetValue(maxIlvl-50)
 	ilvlSlider:SetValueStep(1)
 	ilvlSlider:SetHitRectInsets(0, 0, 0, 0) -- default from OptionsSliderTemplate: 0,0,-10,-10
 
-	local editbox = CreateFrame("EditBox", nil, frame)
+	local editbox = CreateFrame("EditBox", nil, frame, "BackdropTemplate")
 	editbox:SetAutoFocus(false)
 	editbox:SetFontObject(GameFontHighlightSmall)
 	editbox:SetPoint("TOP", ilvlSlider, "BOTTOM")
