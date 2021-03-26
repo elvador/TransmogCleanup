@@ -71,7 +71,7 @@ local sellWindow = nil
 local scanningTooltip = nil
 local updateItemListThrottle = nil
 local lastWindowState = nil
-local maxIlvl = 155
+local maxIlvl = 233
 local itemQualities = {
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
