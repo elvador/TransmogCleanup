@@ -33,15 +33,15 @@ local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
 local C_Timer = C_Timer
 local CreateFrame = CreateFrame
 local GetCoinTextureString = GetCoinTextureString
-local GetContainerItemLink = GetContainerItemLink
-local GetContainerNumSlots = GetContainerNumSlots
-local GetContainerItemPurchaseInfo = GetContainerItemPurchaseInfo
+local GetContainerItemLink = C_Container.GetContainerItemLink
+local GetContainerNumSlots = C_Container.GetContainerNumSlots
+local GetContainerItemPurchaseInfo = C_Container.GetContainerItemPurchaseInfo
 local GetItemInfo = GetItemInfo
 local GetItemSpell = GetItemSpell
 local SecondsToTime = SecondsToTime
 local select = select
 local tonumber = tonumber
-local UseContainerItem = UseContainerItem
+local UseContainerItem = C_Container.UseContainerItem
 local unpack = unpack
 local GameFontHighlightSmall = GameFontHighlightSmall
 local floor = math.floor
@@ -71,7 +71,7 @@ local sellWindow = nil
 local scanningTooltip = nil
 local updateItemListThrottle = nil
 local lastWindowState = nil
-local maxIlvl = 233
+local maxIlvl = 425
 local itemQualities = {
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
@@ -250,7 +250,7 @@ local function sellItems()
 		if not isItemIgnored(item.link) then
 			if item.price > 0 then
 
-				local _, _, refundSec = GetContainerItemPurchaseInfo(item.bag, item.slot)
+				local _, _, refundSec = GetContainerItemPurchaseInfo(item.bag, item.slot, false)
 				if refundSec then
 					print(("Not selling %s because it is still refundable. Please wait %s before selling it."):format(item.link, SecondsToTime(refundSec, true, true)))
 				else
