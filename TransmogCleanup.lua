@@ -73,6 +73,7 @@ local updateItemListThrottle = nil
 local lastWindowState = nil
 local maxIlvl = 425
 local itemQualities = {
+	{0.53, 0.62, 0.62}, -- poor
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
 	{   0, 0.44, 0.87}, -- rare
@@ -442,7 +443,7 @@ local function createSellWindow()
 	filterText:SetText("Sell filters")
 
 	local qualityCBs = {}
-	for i = 1, #itemQualities do
+	for i = 0, #itemQualities do
 		local cb = CreateFrame("CheckButton", "TCSellWindowQualityCB"..i, frame, "InterfaceOptionsCheckButtonTemplate")
 		cb:SetPoint("LEFT", frame, "TOPLEFT", 5, -34 - 17 * i)
 		_G["TCSellWindowQualityCB"..i.."Text"]:SetText(_G["ITEM_QUALITY"..i.."_DESC"])
