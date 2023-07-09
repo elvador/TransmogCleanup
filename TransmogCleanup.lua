@@ -19,7 +19,7 @@ local version = "@project-version@"
 local debug = false
 --@debug@
 version = "(git)"
-debug = true
+--debug = true
 --@end-debug@
 
 --------------------------------------------------------------------------------
@@ -71,13 +71,14 @@ local sellWindow = nil
 local scanningTooltip = nil
 local updateItemListThrottle = nil
 local lastWindowState = nil
-local maxIlvl = 425
+local maxIlvl = 500
 local itemQualities = {
+	{0.53, 0.62, 0.62}, -- poor
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
 	{   0, 0.44, 0.87}, -- rare
 	{0.64, 0.21, 0.93}, -- epic
-	{   1, 0.50,    0}, -- legendary
+    {   1, 0.50,    0}, -- legendary
 }
 local bindOn = {
 	{"BoE", "Bind on Equip"},
@@ -444,12 +445,13 @@ local function createSellWindow()
 	local qualityCBs = {}
 	for i = 1, #itemQualities do
 		local cb = CreateFrame("CheckButton", "TCSellWindowQualityCB"..i, frame, "InterfaceOptionsCheckButtonTemplate")
+		local qualityIndex = i - 1  --array index starts at 1, quality index starts at 0
 		cb:SetPoint("LEFT", frame, "TOPLEFT", 5, -34 - 17 * i)
-		_G["TCSellWindowQualityCB"..i.."Text"]:SetText(_G["ITEM_QUALITY"..i.."_DESC"])
+		_G["TCSellWindowQualityCB"..i.."Text"]:SetText(_G["ITEM_QUALITY"..qualityIndex.."_DESC"])
 		_G["TCSellWindowQualityCB"..i.."Text"]:SetTextColor(unpack(itemQualities[i]))
 		cb:SetHitRectInsets(0, -80, 0, 0)
 		cb.type = "quality"
-		cb.id = i
+		cb.id = qualityIndex
 		cb:SetScript("OnClick", onFilterCheckedChange)
 		qualityCBs[#qualityCBs + 1] = cb
 	end
@@ -770,6 +772,7 @@ function events:ADDON_LOADED(...)
 		if not db.filters then
 			db.filters = {
 				["quality"] = {
+					[0] = true,
 					[1] = true,
 					[2] = true,
 					[3] = true,
@@ -784,7 +787,7 @@ function events:ADDON_LOADED(...)
 					[1] = true,
 					[2] = true,
 				},
-				["ilvl"] = 700,
+				["ilvl"] = 400,
 			}
 		end
 		if not db.filters.onuse and db.filters.onuse ~= false then
