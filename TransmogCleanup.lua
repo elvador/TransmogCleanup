@@ -78,7 +78,7 @@ local itemQualities = {
 	{0.12,    1,    0}, -- uncommon
 	{   0, 0.44, 0.87}, -- rare
 	{0.64, 0.21, 0.93}, -- epic
-	{   1, 0.50,    0}, -- legendary
+    {   1, 0.50,    0}, -- legendary
 }
 local bindOn = {
 	{"BoE", "Bind on Equip"},
@@ -443,14 +443,15 @@ local function createSellWindow()
 	filterText:SetText("Sell filters")
 
 	local qualityCBs = {}
-	for i = 0, #itemQualities do
+	for i = 1, #itemQualities do
 		local cb = CreateFrame("CheckButton", "TCSellWindowQualityCB"..i, frame, "InterfaceOptionsCheckButtonTemplate")
+		local qualityIndex = i - 1
 		cb:SetPoint("LEFT", frame, "TOPLEFT", 5, -34 - 17 * i)
-		_G["TCSellWindowQualityCB"..i.."Text"]:SetText(_G["ITEM_QUALITY"..i.."_DESC"])
+		_G["TCSellWindowQualityCB"..i.."Text"]:SetText(_G["ITEM_QUALITY"..qualityIndex.."_DESC"])
 		_G["TCSellWindowQualityCB"..i.."Text"]:SetTextColor(unpack(itemQualities[i]))
 		cb:SetHitRectInsets(0, -80, 0, 0)
 		cb.type = "quality"
-		cb.id = i
+		cb.id = qualityIndex
 		cb:SetScript("OnClick", onFilterCheckedChange)
 		qualityCBs[#qualityCBs + 1] = cb
 	end
