@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100100
 ## Title: TransmogCleanup
 ## Notes: Cleanup your bag from items you already learned to transmog
 ## Author: Elvador
