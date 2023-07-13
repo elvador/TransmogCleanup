@@ -530,7 +530,7 @@ local function createSellWindow()
 	_G["TCSellWindowIlvlSliderLow"]:SetText("1")
 	_G["TCSellWindowIlvlSliderHigh"]:SetText(maxIlvl)
 	ilvlSlider:SetMinMaxValues(1, maxIlvl)
- 	ilvlSlider:SetValue(maxIlvl-50)
+	ilvlSlider:SetValue(maxIlvl-50)
 	ilvlSlider:SetValueStep(1)
 	ilvlSlider:SetHitRectInsets(0, 0, 0, 0) -- default from OptionsSliderTemplate: 0,0,-10,-10
 
@@ -721,7 +721,7 @@ local function fixButtonPosition()
 		fixPosition = true
 		fixFramelevel = true
 	end
-	
+
 	-- different solutions for whatever is needed
 	if fixPosition then
 		merchantButton:SetPoint("BOTTOMLEFT", MerchantFramePortrait, "BOTTOMRIGHT", 5, -12)
