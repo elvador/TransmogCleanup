@@ -784,7 +784,7 @@ function events:ADDON_LOADED(...)
 					[1] = true,
 					[2] = true,
 				},
-				["ilvl"] = 700,
+				["ilvl"] = maxIlvl-50,
 			}
 		end
 		if not db.filters.onuse and db.filters.onuse ~= false then
