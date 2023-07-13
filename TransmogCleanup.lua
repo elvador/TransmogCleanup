@@ -73,6 +73,7 @@ local updateItemListThrottle = nil
 local lastWindowState = nil
 local maxIlvl = 450
 local itemQualities = {
+	[0] = {0.62, 0.62, 0.62}, -- poor, force index to 0
 	{   1,    1,    1}, -- common
 	{0.12,    1,    0}, -- uncommon
 	{   0, 0.44, 0.87}, -- rare
@@ -442,9 +443,9 @@ local function createSellWindow()
 	filterText:SetText("Sell filters")
 
 	local qualityCBs = {}
-	for i = 1, #itemQualities do
+	for i = 0, #itemQualities do
 		local cb = CreateFrame("CheckButton", "TCSellWindowQualityCB"..i, frame, "InterfaceOptionsCheckButtonTemplate")
-		cb:SetPoint("LEFT", frame, "TOPLEFT", 5, -34 - 17 * i)
+		cb:SetPoint("LEFT", frame, "TOPLEFT", 5, -51 - 17 * i)
 		_G["TCSellWindowQualityCB"..i.."Text"]:SetText(_G["ITEM_QUALITY"..i.."_DESC"])
 		_G["TCSellWindowQualityCB"..i.."Text"]:SetTextColor(unpack(itemQualities[i]))
 		cb:SetHitRectInsets(0, -80, 0, 0)
@@ -770,6 +771,7 @@ function events:ADDON_LOADED(...)
 		if not db.filters then
 			db.filters = {
 				["quality"] = {
+					[0] = true,
 					[1] = true,
 					[2] = true,
 					[3] = true,
